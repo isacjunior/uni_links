@@ -13,12 +13,8 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
 
-public class UniLinksPlugin
-        implements FlutterPlugin,
-        MethodChannel.MethodCallHandler,
-        EventChannel.StreamHandler,
-        ActivityAware,
-        PluginRegistry.NewIntentListener {
+public class UniLinksPlugin implements FlutterPlugin, MethodChannel.MethodCallHandler, EventChannel.StreamHandler,
+        ActivityAware, PluginRegistry.NewIntentListener {
 
     private static final String MESSAGES_CHANNEL = "uni_links/messages";
     private static final String EVENTS_CHANNEL = "uni_links/events";
@@ -118,6 +114,7 @@ public class UniLinksPlugin
     public void onMethodCall(MethodCall call, MethodChannel.Result result) {
         if (call.method.equals("getInitialLink")) {
             result.success(initialLink);
+            initialLink = null;
         } else if (call.method.equals("getLatestLink")) {
             result.success(latestLink);
             latestLink = null;
@@ -143,8 +140,7 @@ public class UniLinksPlugin
     }
 
     @Override
-    public void onReattachedToActivityForConfigChanges(
-            ActivityPluginBinding activityPluginBinding) {
+    public void onReattachedToActivityForConfigChanges(ActivityPluginBinding activityPluginBinding) {
         activityPluginBinding.addOnNewIntentListener(this);
         this.handleIntent(this.context, activityPluginBinding.getActivity().getIntent());
     }
