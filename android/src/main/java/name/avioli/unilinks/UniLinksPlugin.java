@@ -3,6 +3,7 @@ package name.avioli.unilinks;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -14,10 +15,10 @@ import io.flutter.plugin.common.PluginRegistry;
 
 public class UniLinksPlugin
         implements FlutterPlugin,
-                MethodChannel.MethodCallHandler,
-                EventChannel.StreamHandler,
-                ActivityAware,
-                PluginRegistry.NewIntentListener {
+        MethodChannel.MethodCallHandler,
+        EventChannel.StreamHandler,
+        ActivityAware,
+        PluginRegistry.NewIntentListener {
 
     private static final String MESSAGES_CHANNEL = "uni_links/messages";
     private static final String EVENTS_CHANNEL = "uni_links/events";
@@ -39,7 +40,13 @@ public class UniLinksPlugin
                 initialIntent = false;
             }
             latestLink = dataString;
-            if (changeReceiver != null) changeReceiver.onReceive(context, intent);
+            // if (changeReceiver != null) changeReceiver.onReceive(context, intent);
+            if (changeReceiver != null) {
+                changeReceiver.onReceive(context, intent);
+
+                // 这个值没有必要记录, 用完即销毁
+                latestLink = null;
+            }
         }
     }
 
@@ -76,7 +83,9 @@ public class UniLinksPlugin
         eventChannel.setStreamHandler(plugin);
     }
 
-    /** Plugin registration. */
+    /**
+     * Plugin registration.
+     */
     public static void registerWith(PluginRegistry.Registrar registrar) {
         // Detect if we've been launched in background
         if (registrar.activity() == null) {
@@ -92,7 +101,8 @@ public class UniLinksPlugin
     }
 
     @Override
-    public void onDetachedFromEngine(FlutterPluginBinding flutterPluginBinding) {}
+    public void onDetachedFromEngine(FlutterPluginBinding flutterPluginBinding) {
+    }
 
     @Override
     public void onListen(Object o, EventChannel.EventSink eventSink) {
@@ -110,6 +120,7 @@ public class UniLinksPlugin
             result.success(initialLink);
         } else if (call.method.equals("getLatestLink")) {
             result.success(latestLink);
+            latestLink = null;
         } else {
             result.notImplemented();
         }
@@ -128,7 +139,8 @@ public class UniLinksPlugin
     }
 
     @Override
-    public void onDetachedFromActivityForConfigChanges() {}
+    public void onDetachedFromActivityForConfigChanges() {
+    }
 
     @Override
     public void onReattachedToActivityForConfigChanges(
@@ -138,5 +150,6 @@ public class UniLinksPlugin
     }
 
     @Override
-    public void onDetachedFromActivity() {}
+    public void onDetachedFromActivity() {
+    }
 }
