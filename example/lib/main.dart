@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uni_links/uni_links.dart';
 
-void main() => runApp(new MyApp());
+void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
   @override
-  _MyAppState createState() => new _MyAppState();
+  _MyAppState createState() => _MyAppState();
 }
 
 enum UniLinksType { string, uri }
@@ -28,12 +28,12 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   final List<String> _cmds = getCmds();
   final TextStyle _cmdStyle = const TextStyle(
       fontFamily: 'Courier', fontSize: 12.0, fontWeight: FontWeight.w700);
-  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   initState() {
     super.initState();
-    _tabController = new TabController(vsync: this, length: 2);
+    _tabController = TabController(vsync: this, length: 2);
     _tabController.addListener(_handleTabChange);
     initPlatformState();
   }
@@ -65,7 +65,9 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
         _latestUri = null;
         try {
           if (link != null) _latestUri = Uri.parse(link);
-        } on FormatException {}
+        } on FormatException {
+          print('FormatException ');
+        }
       });
     }, onError: (Object err) {
       if (!mounted) return;
@@ -161,54 +163,54 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     final queryParams = _latestUri?.queryParametersAll?.entries?.toList();
 
-    return new MaterialApp(
-      home: new Scaffold(
+    return MaterialApp(
+      home: Scaffold(
         key: _scaffoldKey,
-        appBar: new AppBar(
-          title: new Text('Plugin example app'),
-          bottom: new TabBar(
+        appBar: AppBar(
+          title: Text('Plugin example app'),
+          bottom: TabBar(
             controller: _tabController,
             tabs: <Widget>[
-              new Tab(text: 'STRING LINK'),
-              new Tab(text: 'URI'),
+              Tab(text: 'STRING LINK'),
+              Tab(text: 'URI'),
             ],
           ),
         ),
-        body: new ListView(
+        body: ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.all(8.0),
           children: <Widget>[
-            new ListTile(
+            ListTile(
               title: const Text('Initial Link'),
-              subtitle: new Text('$_initialLink'),
+              subtitle: Text('$_initialLink'),
             ),
-            new ListTile(
+            ListTile(
               title: const Text('Link'),
-              subtitle: new Text('$_latestLink'),
+              subtitle: Text('$_latestLink'),
             ),
-            new ListTile(
+            ListTile(
               title: const Text('Uri Path'),
-              subtitle: new Text('${_latestUri?.path}'),
+              subtitle: Text('${_latestUri?.path}'),
             ),
-            new ExpansionTile(
+            ExpansionTile(
               initiallyExpanded: true,
               title: const Text('Query params'),
               children: queryParams?.map((item) {
-                    return new ListTile(
-                      title: new Text('${item.key}'),
-                      trailing: new Text('${item.value?.join(', ')}'),
+                    return ListTile(
+                      title: Text('${item.key}'),
+                      trailing: Text('${item.value?.join(', ')}'),
                     );
                   })?.toList() ??
                   <Widget>[
-                    new ListTile(
+                    ListTile(
                       dense: true,
                       title: const Text('null'),
                     ),
                   ],
             ),
             _cmdsCard(_cmds),
-            new Divider(),
-            new ListTile(
+            Divider(),
+            ListTile(
               leading: Icon(Icons.error, color: Colors.red),
               title: const Text(
                 'Force quit this example app',
@@ -234,22 +236,22 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
     Widget platformCmds;
 
     if (commands == null) {
-      platformCmds = const Center(child: const Text('Unsupported platform'));
+      platformCmds = const Center(child: Text('Unsupported platform'));
     } else {
-      platformCmds = new Column(
+      platformCmds = Column(
         children: <List<Widget>>[
           [
             const Text(
                 'To populate above fields open a terminal shell and run:\n')
           ],
           intersperse(
-              commands.map<Widget>((cmd) => new InkWell(
+              commands.map<Widget>((cmd) => InkWell(
                     onTap: () => _printAndCopy(cmd),
-                    child: new Text('\n$cmd\n', style: _cmdStyle),
+                    child: Text('\n$cmd\n', style: _cmdStyle),
                   )),
               const Text('or')),
           [
-            new Text(
+            Text(
                 '(tap on any of the above commands to print it to'
                 ' the console/logger and copy to the device clipboard.)',
                 textAlign: TextAlign.center,
@@ -259,9 +261,9 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
       );
     }
 
-    return new Card(
+    return Card(
       margin: const EdgeInsets.only(top: 20.0),
-      child: new Padding(
+      child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: platformCmds,
       ),
@@ -280,8 +282,8 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   Future<void> _printAndCopy(String cmd) async {
     print(cmd);
 
-    await Clipboard.setData(new ClipboardData(text: cmd));
-    _scaffoldKey.currentState.showSnackBar(new SnackBar(
+    await Clipboard.setData(ClipboardData(text: cmd));
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
       content: const Text('Copied to Clipboard'),
     ));
   }
@@ -314,7 +316,7 @@ List<String> getCmds() {
 List<Widget> intersperse(Iterable<Widget> list, Widget item) {
   final initialValue = <Widget>[];
   return list.fold(initialValue, (all, el) {
-    if (all.length != 0) all.add(item);
+    if (all.isNotEmpty) all.add(item);
     all.add(el);
     return all;
   });

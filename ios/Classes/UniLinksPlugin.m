@@ -90,6 +90,9 @@ static id _instance;
    	  result(self.latestLink);
       // 这个值没有必要记录, 用完即销毁
      _latestLink = nil;
+  } else if ([@"clearDeepLinkCache" isEqualToString:call.method]) {
+   	  self.initialLink = nil;
+     _latestLink = nil;
   } else {
     result(FlutterMethodNotImplemented);
   }

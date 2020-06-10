@@ -19,6 +19,14 @@ Future<String> getInitialLink() async {
   return initialLink;
 }
 
+// Returns a [Future], which completes to one of the following:
+///
+///   * the initially stored link (possibly null), on successful invocation;
+///   * a [PlatformException], if the invocation failed in the platform plugin.
+FutureOr<void> clearDeepLinkCache() async {
+  await _mChannel.invokeMethod<void>('clearDeepLinkCache');
+}
+
 /// A convenience method that returns the initially stored link
 /// as a new [Uri] object.
 ///

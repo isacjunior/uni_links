@@ -118,6 +118,10 @@ public class UniLinksPlugin implements FlutterPlugin, MethodChannel.MethodCallHa
         } else if (call.method.equals("getLatestLink")) {
             result.success(latestLink);
             latestLink = null;
+        } else if (call.method.equals("clearDeepLinkCache")) {
+            initialIntent = false;
+            initialLink = null;
+            latestLink = null;
         } else {
             result.notImplemented();
         }
